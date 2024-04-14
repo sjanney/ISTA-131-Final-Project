@@ -3,7 +3,25 @@ import pandas as pd
 #Data Visualization Library: https://seaborn.pydata.org/ 
 import seaborn as sns
 
-def printer(csv):
+"""
+Graph Constructor
+This group of functions are created to help us create different types of visualizations
+based of specific types of parameters that we want to use/share with the given datasets.
+All of these vary from specific types of printing, correlation, and creation of specific
+types of other types of statistical analysis. 
+
+"""
+
+
+
+
+def constructor(csv):
+    """
+    Simply prints out the given csv
+    
+    Args
+    csv (String): A csv file name
+    """
     data = pd.read_csv(csv)
     return data
     
@@ -12,6 +30,12 @@ def data_constructor(df, year=None, state=None):
     '''
     This function takes in a given dataframe object,
     and creates a new DataFrame based on given state and year
+
+
+    Args:
+    df (DataFrame Object): A given DataFrame, preferably of all data.
+    year (int): Given specfic year of data, defaults to all.
+    state (string): Collects specific state with data for DataFrame creation.
     '''
     filtered_data = df[(df['Indicator'] == 'Chlamydia') & 
                            (df['Year'] == year) & 
@@ -99,5 +123,3 @@ def correlation_matrix(correlation="Age group"):
     plt.xticks(rotation=45)
     plt.yticks(rotation=0)
     plt.show()
-
-correlation_matrix("Population")
