@@ -13,8 +13,6 @@ types of other types of statistical analysis.
 """
 
 
-
-
 def constructor(csv):
     """
     Simply prints out the given csv
@@ -41,7 +39,6 @@ def data_constructor(df, year=None, state=None):
                            (df['Year'] == year) & 
                            (df['Geography'] == state)]
     return filtered_data
-
 
 
 
@@ -123,3 +120,64 @@ def correlation_matrix(correlation="Age group"):
     plt.xticks(rotation=45)
     plt.yticks(rotation=0)
     plt.show()
+
+
+def scatterplot(csv_file):
+    """
+   This function creates a csv file with given parameters
+
+    Args:
+        csv_file (str): Path to the CSV file.
+        x_column (str): Column name for the x-axis (e.g., 'Rate').
+        y_column (str): Column name for the y-axis (e.g., 'Cases').
+        hue_column (str): Column name for the hue (e.g., 'Geography').
+
+    Returns:
+        None (displays the scatterplot).
+    """
+    x_column = 'Rate'
+    y_column = 'Cases'
+    hue_column = "Geography"
+
+    # Load CSV into a DataFrame
+    df = pd.read_csv(csv_file)
+
+    # Convert string numbers nums
+    df[x_column] = pd.to_numeric(df[x_column], errors='coerce')
+    df[y_column] = pd.to_numeric(df[y_column].str.replace(',', ''), errors='coerce')
+
+    # Plotting
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(data=df, x=x_column, y=y_column, hue=hue_column, s=100)
+    plt.title(f"{y_column} vs. {x_column} by {hue_column}")
+    plt.xlabel(x_column)
+    plt.ylabel(y_column)
+    plt.grid(True)
+    plt.show()
+
+def plot_cases_by_year(csv_file, state):
+    df = pd.read_csv(csv_file)
+
+    # Filter data for the specified state
+    state_data = df[df['Geography'] == state]
+
+    # Ensure 'Year' column is treated as numeric
+    state_data['Year'] = pd.to_numeric(state_data['Year'])
+
+    # Group data by year and sum the cases
+    yearly_cases = state_data.groupby('Year')['Cases'].sum()
+
+    # Plotting the bar graph
+    plt.figure(figsize=(10, 6))
+    plt.bar(yearly_cases.index, yearly_cases.values, color='skyblue')
+    plt.title(f"Number of Cases Over Years in {state}")
+    plt.xlabel("Year")
+    plt.ylabel("Number of Cases")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.xticks(rotation=45)
+    plt.show()
+
+
+plot_cases_by_year('chlamydia_by_state.csv','Arizona')
+average_cases()
+scatterplot('chlamydia_by_state.csv')
