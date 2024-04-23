@@ -56,15 +56,7 @@ def average_cases(start=None, stop=None):
     if start is not None and stop is not None:
         filtered_df = df[(df['Year'] >= start) & (df['Year'] <= stop)]
     else:
-        # If start or stop years are not specified, use the entire dataset
         filtered_df = df
-    # Check if 'Rate' column contains numeric values
-    if filtered_df['Rate'].dtype.kind in 'ifc':
-        # 'Rate' column is already numeric (float/int), no need to convert
-        pass
-    else:
-        # Convert 'Rate' column to numeric (remove commas and convert to float)
-        filtered_df['Rate'] = pd.to_numeric(filtered_df['Rate'].str.replace(',', ''), errors='coerce')
     # Grouping everything by year and calculating all of the averages of each year
     avg_rates = filtered_df.groupby('Year')['Rate'].mean().reset_index()
     # Plotting the line graph
@@ -83,57 +75,12 @@ def average_cases(start=None, stop=None):
     return filtered_df
 
 
-def correlation_matrix(correlation="Age group"):
-    """
-    Generate and visualize the correlation matrix of Chlamydia rates based on a specified correlation parameter.
-    
-    Args:
-    correlation (str): Column name to use for grouping and correlation analysis (e.g., 'Age group', 'Geography', etc.).
-                       Default is 'Age group'.
-    """
-    # Load the CSV data
-    df = pd.read_csv('Chlamydia_by_state.csv', thousands=',', na_values=['Data not available', 'null'])
-    
-    # Convert 'Rate' column to numeric (if it's not already numeric)
-    if not pd.api.types.is_numeric_dtype(df['Rate']):
-        df['Rate'] = pd.to_numeric(df['Rate'], errors='coerce')
-    
-    # Group by the specified correlation parameter and calculate average rate for each group
-    avg_rates_by_param = df.groupby(correlation)['Rate'].mean().reset_index()
-    
-    # Display average rates by parameter
-    print(f"Average Chlamydia Rates by {correlation}:\n{avg_rates_by_param}\n")
-    
-    # Create a pivot table to reshape the data (correlation parameter vs. Year)
-    pivot_table = df.pivot_table(index=correlation, columns='Year', values='Rate', aggfunc='mean')
-    print(pivot_table)
-    
-    # Compute the correlation matrix
-    correlation_matrix = pivot_table.corr()
-    
-    # Plot correlation matrix as a heatmap
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
-    plt.title(f'Correlation Matrix of Chlamydia Rates by {correlation}')
-    plt.xlabel('Year')
-    plt.ylabel(correlation)
-    plt.xticks(rotation=45)
-    plt.yticks(rotation=0)
-    plt.show()
-
-
 def scatterplot(csv_file):
     """
    This function creates a csv file with given parameters
 
     Args:
         csv_file (str): Path to the CSV file.
-        x_column (str): Column name for the x-axis (e.g., 'Rate').
-        y_column (str): Column name for the y-axis (e.g., 'Cases').
-        hue_column (str): Column name for the hue (e.g., 'Geography').
-
-    Returns:
-        None (displays the scatterplot).
     """
     x_column = 'Rate'
     y_column = 'Cases'
