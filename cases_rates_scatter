@@ -1,0 +1,29 @@
+def scatterplot(csv_file,state):
+    """
+   This function creates a csv file with given parameters
+
+    Args:
+        csv_file (str): Path to the CSV file.
+    """
+    x_column = 'Rate'
+    y_column = 'Cases'
+    key = "Geography"
+
+    # Load CSV into a DataFrame
+    df = pd.read_csv(csv_file)
+
+    # Convert string numbers nums
+    df[x_column] = pd.to_numeric(df[x_column], errors='coerce')
+    df[y_column] = pd.to_numeric(df[y_column].str.replace(',', ''), errors='coerce')
+    
+    df_state = df.loc[df[key] == state]
+    sns.regplot(data=df_state, x=x_column, y=y_column, scatter=True, color='red',marker='x').set(title=f"Rates vs Cases in {state}")
+    plt.figure(figsize=(8, 3))
+    sns.scatterplot(data=df_state, x=x_column, y=y_column, hue=key, s=100,marker ='*',palette='Set3')
+    plt.title(f"Rates vs Cases in {state}")
+    plt.xlabel(f"{x_column} ")
+    plt.ylabel('Number of cases')
+    plt.legend(fontsize=5, loc='upper right')
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    plt.show()

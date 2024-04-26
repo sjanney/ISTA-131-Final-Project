@@ -1,0 +1,21 @@
+def plot_cases_by_year(csv_file, state):
+    df = pd.read_csv(csv_file)
+
+    # Filter data for the specified state
+    state_data = df[df['Geography'] == state]
+
+    # Ensure 'Year' column is treated as numeric
+    state_data['Year'] = pd.to_numeric(state_data['Year'])
+
+    # Group data by year and sum the cases
+    yearly_cases = state_data.groupby('Year')['Cases'].sum()
+
+    # Plotting the bar graph
+    plt.figure(figsize=(10, 6))
+    plt.bar(yearly_cases.index, yearly_cases.values, color='purple')
+    plt.title(f"Number of Cases Over Years in {state}")
+    plt.xlabel("Year")
+    plt.ylabel("Number of Cases")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.xticks(rotation=45)
+    plt.show()
