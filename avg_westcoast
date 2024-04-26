@@ -1,0 +1,33 @@
+def average_cases_west(start=None, stop=None):
+    """
+    Calculate and plot the average rate of Chlamydia cases between specific time periods.
+    
+    Args:
+    start (int): Starting year (inclusive) for filtering the data.
+    stop (int): Ending year (inclusive) for filtering the data.
+    """
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv('Chlamydia_by_state.csv', thousands=',', na_values=['Data not available', 'null'])
+    # Filter the DataFrame based on the specified time period (start to stop years)
+    west_coast_states = ['California', 'Oregon', 'Washington','Arizona','Nevada','Alaska','Hawaii']
+    df= df[df['Geography'].isin(west_coast_states)]
+    if start is not None and stop is not None:
+        filtered_df = df[(df['Year'] >= start) & (df['Year'] <= stop)]
+    else:
+        filtered_df = df
+    # Grouping everything by year and calculating all of the averages of each year
+    avg_rates = filtered_df.groupby('Year')['Rate'].mean().reset_index()
+    # Plotting the line graph
+    plt.figure(figsize=(8, 5))
+    plt.plot(avg_rates['Year'], avg_rates['Rate'], marker='*', linestyle=':', color='c')
+    #Main title of line graph
+    plt.title('Average Rate of Chlamydia Cases in the West Coast')
+    #Axies
+    plt.xlabel('Year')
+    plt.ylabel('Average Rate (per 100,000 population)')
+    plt.grid(True)
+    #Each iteration by 45 
+    plt.xticks(avg_rates['Year'], rotation=50)
+    plt.show()
+    # Optionally return the DataFrame containing filtered data
+    return filtered_df
